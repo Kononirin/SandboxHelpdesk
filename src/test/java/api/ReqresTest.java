@@ -13,7 +13,7 @@ public class ReqresTest {
 
     @Test
     public void checkAvatarAndIdTest() {
-        Specifications.installSpecification(Specifications.requestSpec(URL), Specifications.responseSpecError400());
+        Specifications.installSpecification(Specifications.requestSpec(URL), Specifications.responseSpecOK200());
         List<UserData> users = given()
                 .when()
                 .get("api/users?page=2")
@@ -34,9 +34,38 @@ public class ReqresTest {
     }
 
     @Test
-    public void succesRegTest() {
+    public void successRegTest() {
+        Specifications.installSpecification(Specifications.requestSpec(URL), Specifications.responseSpecOK200());
 
+        Integer id = 4;
+        String token = "QpwL5tke4Pnpja7X4";
+
+        Register user = new Register("eve.holt@reqres.in", "pistol");
+        SuccessReg successReg = given()
+                .body(user)
+                .when()
+                .post("api/register")
+                .then().log().all()
+                .extract().as(SuccessReg.class);
+
+        Assert.assertNotNull(successReg.getId());
+        Assert.assertNotNull(successReg.getToken());
+        Assert.assertEquals(id, successReg.getId());
+        Assert.assertEquals(token, successReg.getToken());
     }
 
+    @Test
+    public void unSuccessRegTest() {
+        Specifications.installSpecification(Specifications.requestSpec(URL), Specifications.responseSpecError400());
 
+        Register user = new Register("sydney@fife", "");
+
+        UnSuccessReg unSuccessReg = given()
+                .body(user)
+                .post("api/register")
+                .then().log().all()
+                .extract().as(UnSuccessReg.class);
+
+        Assert.assertEquals("Missing password", unSuccessReg.getError());
+    }
 }
