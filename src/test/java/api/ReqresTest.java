@@ -2,6 +2,8 @@ package api;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.time.Clock;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -81,5 +83,38 @@ public class ReqresTest {
         List<Integer> sortedYears = years.stream().sorted().collect(Collectors.toList());
 
         Assert.assertEquals(sortedYears, years);
+
+        System.out.println(years);
+        System.out.println(sortedYears);
+    }
+
+    @Test
+    public void deleteUserTest() {
+        Specifications.installSpecification(Specifications.requestSpec(URL), Specifications.responseSpecUnique(204));
+
+        given()
+                .when()
+                .delete("api/users/2")
+                .then().log().all();
+    }
+
+    @Test
+    public void timeTest() {
+        Specifications.installSpecification(Specifications.requestSpec(URL), Specifications.responseSpecOK200());
+
+        UserTime user = new UserTime("morpheus", "zion resident");
+        UserTimeResponse response = given()
+                .body(user)
+                .put("api/users/2")
+                .then().log().all()
+                .extract().as(UserTimeResponse.class);
+
+        String regexResponse = "(.{5})$";
+        String regexComputer = "(.{11})$";
+
+        String currentTime= Clock.systemUTC().instant().toString().replaceAll(regexComputer, "");
+
+        Assert.assertEquals(currentTime, response.getUpdatedAt().replaceAll(regexResponse, ""));
+
     }
 }
