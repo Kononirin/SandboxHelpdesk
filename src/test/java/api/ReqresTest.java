@@ -1,6 +1,5 @@
 package api;
 
-import io.restassured.http.ContentType;
 import org.junit.Assert;
 import org.junit.Test;
 import java.util.List;
@@ -67,5 +66,20 @@ public class ReqresTest {
                 .extract().as(UnSuccessReg.class);
 
         Assert.assertEquals("Missing password", unSuccessReg.getError());
+    }
+
+    @Test
+    public void sortedYearsTest() {
+        Specifications.installSpecification(Specifications.requestSpec(URL), Specifications.responseSpecOK200());
+
+        List<ColorsData> colors = given()
+                .when()
+                .get("api/unknown")
+                .then().log().all()
+                .extract().body().jsonPath().getList("data", ColorsData.class);
+        List<Integer> years = colors.stream().map(ColorsData::getYear).collect(Collectors.toList());
+        List<Integer> sortedYears = years.stream().sorted().collect(Collectors.toList());
+
+        Assert.assertEquals(sortedYears, years);
     }
 }
