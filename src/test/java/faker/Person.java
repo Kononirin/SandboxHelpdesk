@@ -2,10 +2,6 @@ package faker;
 
 import com.github.javafaker.Faker;
 
-//public class Person {
-//
-//}
-
 public class Person {
     private String firstName;
     private String lastName;

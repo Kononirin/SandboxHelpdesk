@@ -36,14 +36,12 @@ abstract public class BaseTest {
         options.addArguments("start-maximized");
         driver = new ChromeDriver(options);
 
-        driver.manage().window().maximize();
-        driver.manage().window().setSize(new Dimension(1440, 900));
+//        driver.manage().window().maximize();
+//        driver.manage().window().setSize(new Dimension(1440, 900));
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
         driver.get("https://at-sandbox.workbench.lanit.ru/");
         BasePage.setDriver(driver);
     }
-
-
 
     @After
     public void tearDown() {
